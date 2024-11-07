@@ -1,0 +1,38 @@
+networks:
+  tm-network:
+    external: true
+
+services:
+  mysql-db:
+      image: mysql:latest
+      container_name: mysql-db
+      ports:
+        - "3306:3306"
+        - "33060:33060"
+      environment:
+        MYSQL_DATABASE: tm_mysql_database
+        MYSQL_ROOT_PASSWORD: secret
+      volumes:
+        - .docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+        - db-data:/data/db
+      networks:
+        - tm-network
+  php-apache:
+    build: 
+      context: .
+      dockerfile: DockerFile
+    container_name: php-apache
+    volumes:
+      - ./app:/var/www/html 
+      - ./default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+      - ./certs/apache-selfsigned.crt:/etc/ssl/certs/apache-selfsigned.crt
+      - ./certs/apache-selfsigned.key:/etc/ssl/private/apache-selfsigned.key
+    working_dir: /app
+    ports:
+      - "8080:80"
+      - "443:443"
+    networks:
+      - tm-network  
+
+volumes:
+  db-data:

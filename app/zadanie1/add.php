@@ -9,7 +9,7 @@
         exit; 
     }
 
-    $link = mysqli_connect("mysql", "root", "secret", "tm_mysql_database"); // połączenie z BD – wpisać swoje dane
+    $link = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_database"); // połączenie z BD – wpisać swoje dane
 
     if(!$link) 
     { 
