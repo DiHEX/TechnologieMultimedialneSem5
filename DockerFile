@@ -1,0 +1,28 @@
+# Use the official PHP image as a base
+FROM php:apache-bullseye
+
+# Copy your application files to the container
+COPY ./app /var/www/html
+
+# Copy custom configuration files
+COPY ./default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+
+# Copy SSL certificates
+COPY ./certs/apache-selfsigned.crt /etc/ssl/certs/apache-selfsigned.crt
+COPY ./certs/apache-selfsigned.key /etc/ssl/private/apache-selfsigned.key
+
+
+# Install dnsutils to get the dig tool
+RUN apt-get update && apt-get install -y dnsutils
+
+# Expose ports 80 and 443
+EXPOSE 80
+EXPOSE 443
+
+
+CMD apachectl -D FOREGROUND
+RUN ln -s /etc/apache2/mods-available/ssl.load  /etc/apache2/mods-enabled/ssl.load
+RUN a2enmod rewrite
+RUN a2enmod mime
+RUN a2ensite default-ssl
+RUN service apache2 restart
