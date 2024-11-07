@@ -2,7 +2,7 @@
     session_start();
     $user = htmlentities ($_POST['user'], ENT_QUOTES, "UTF-8"); // rozbrojenie potencjalnej bomby w zmiennej $user
     $pass = htmlentities ($_POST['pass'], ENT_QUOTES, "UTF-8"); // rozbrojenie potencjalnej bomby w zmiennej $pass
-    $link = mysqli_connect("mysql", "root", "root", "php"); // połączenie z BD – wpisać swoje dane
+    $link = mysqli_connect("mysql", "root", "secret", "tm_mysql_database"); // połączenie z BD – wpisać swoje dane
 
     if(!$link) 
     { 
