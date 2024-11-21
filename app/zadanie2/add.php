@@ -33,11 +33,38 @@
     { 
         $_SESSION ['loggedin'] = true;
         $_SESSION ['userName'] = $user;
-
+        
         mysqli_query($link, "SET NAMES 'utf8'"); // ustawienie polskich znaków
         mysqli_query($link, "INSERT INTO users (username, password) VALUES ('$user', '$pass')"); // wiersza, w którym login=login z formularza
         //echo "Logowanie Ok. User: {$rekord['username']}. Hasło: {$rekord['password']}";
-        header('Location: info.php'); 
+
+        $targetDir = "/var/www/html/files";
+
+        if (!file_exists("$targetDir/$user")) {
+            mkdir("$targetDir/$user", 0777, true);
+        }
+
+        $file = $_FILES["avatar"];
+
+        $basename = "$targetDir/$user/" . basename($file["name"]);
+
+        $user_avatar = "";
+
+        if(isset($_FILES["avatar"]) && $_FILES['avatar']['size'] > 1) {
+
+            move_uploaded_file($file["tmp_name"], $basename);
+
+            $user_avatar = "/files/$user/" . basename($file["name"]);
+         
+        } else {
+            
+            $user_avatar = "https://cdn-icons-png.flaticon.com/512/8742/8742495.png";
+            
+        }
+
+        $_SESSION['avatar'] = $user_avatar;
+
+        header('Location: ./bootstrap/index.php');  
         exit;
     }
 ?>

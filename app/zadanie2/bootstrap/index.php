@@ -1,4 +1,11 @@
-<?php declare(strict_types=1);  /* Ta linia musi być pierwsza */ ?>
+<?php declare(strict_types=1);  /* Ta linia musi być pierwsza */ 
+session_start();
+if (!isset($_SESSION['loggedin']))
+{
+	header('Location: ../zadanie.php');
+	exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>

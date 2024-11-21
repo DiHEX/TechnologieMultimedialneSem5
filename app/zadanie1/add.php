@@ -37,7 +37,7 @@
         mysqli_query($link, "SET NAMES 'utf8'"); // ustawienie polskich znaków
         mysqli_query($link, "INSERT INTO users (username, password) VALUES ('$user', '$pass')"); // wiersza, w którym login=login z formularza
         //echo "Logowanie Ok. User: {$rekord['username']}. Hasło: {$rekord['password']}";
-        header('Location: info.php'); 
+        header('Location: /bootstrap/index.php'); 
         exit;
     }
 ?>

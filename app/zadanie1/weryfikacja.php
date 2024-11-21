@@ -29,7 +29,7 @@
             $_SESSION ['loggedin'] = true;
             $_SESSION ['userName'] = $user;
             //echo "Logowanie Ok. User: {$rekord['username']}. Hasło: {$rekord['password']}";
-            header('Location: info.php'); 
+            header('Location: /bootstrap/index.php');  
             exit;
         }
         else

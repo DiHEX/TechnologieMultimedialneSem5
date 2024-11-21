@@ -1,7 +1,7 @@
 <?php
     session_start();
     if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-        header('Location: info.php'); 
+        header('Location: /bootstrap/index.php');  
         exit; 
     } 
 ?>
@@ -24,9 +24,9 @@
                     <input type="password" class="form-control" id="pass" name="pass" maxlength="20" size="20">
                 </div>
                 <button type="submit" class="btn btn-primary">Zaloguj</button>
+                <a href="rejestruj.php" class="btn btn-link">Rejestruj</a>
             </form>
             <br>
-            <a href="rejestruj.php" class="btn btn-link">Rejestruj</a>
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
