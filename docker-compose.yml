@@ -14,7 +14,7 @@ services:
         MYSQL_ROOT_PASSWORD: secret
       volumes:
         - ./dockerSql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-        - ./db-data:/data/db
+        - db-data:/data/db
       networks:
         - tm-network
   php-apache:
