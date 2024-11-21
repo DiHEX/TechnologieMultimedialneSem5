@@ -13,7 +13,7 @@
 
     if(!$link) 
     { 
-        echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error();
+        //echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error();
         header('Location: rejestruj.php'); 
         exit; 
     } // obsługa błędu połączenia z BD
