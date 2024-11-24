@@ -39,6 +39,6 @@
             ?>
             <br>
         </div>
-        <?php require_once '/bootstrap/footer.php'; ?>	
+        <?php require_once './bootstrap/footer.php'; ?>	
     </body>
 </html>

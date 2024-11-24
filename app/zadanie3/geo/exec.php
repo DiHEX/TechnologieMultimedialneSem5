@@ -17,7 +17,7 @@
 <body>
 <div class="container">
     <h1>Test działania funkcji exec</h1>
-    <a href="../index.php">Powrót do strony głównej laboratorium</a>
+    <a href="index.php">Wróć</a>
     <hr />
 
     <?php

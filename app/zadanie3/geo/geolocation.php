@@ -18,7 +18,7 @@
 <body>
 <div class="container">
     <h1>Geolokalizacja bieżącego użytkownika</h1>
-    <a href="../index.php">Powrót do strony głównej laboratorium</a>
+    <a href="index.php">Wróć</a>
     <hr />
 
 

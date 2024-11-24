@@ -18,19 +18,17 @@
 <body>
     <div class="container">
         <h1>Lab 2 - geolokalizacja</h1>
-        <a href="/">Powrót do strony głównej</a>
+        <a href="../index.php">Powrót do strony głównej</a>
         <hr />
 
         <ol class="choice-list">
-            <li><a href="/netstat.php">Netstat</a></li>
-            <li><a href="/exec.php">Polecenia exec</a></li>
-            <li><a href="/dns.php">DNS Lookup</a></li>
-            <li><a href="/geolocation.php">Geolokacja bieżącego użytkownika</a></li>
-            <li><a href="/phpinfo.php">Wydruk z funkcji phpinfo</a></li>
-            <li><a href="/guests.php" style="font-weight: bold;">Lista gości</a></li>
+            <li><a href="./netstat.php">Netstat</a></li>
+            <li><a href="./exec.php">Polecenia exec</a></li>
+            <li><a href="./dns.php">DNS Lookup</a></li>
+            <li><a href="./geolocation.php">Geolokacja bieżącego użytkownika</a></li>
+            <li><a href="./phpinfo.php">Wydruk z funkcji phpinfo</a></li>
+            <li><a href="./guests.php" style="font-weight: bold;">Lista gości</a></li>
         </ol>
-
-        <?php include "../logout.php" ?>
     </div>
 </body>
 </html>

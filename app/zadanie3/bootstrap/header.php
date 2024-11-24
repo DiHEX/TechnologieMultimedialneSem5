@@ -35,13 +35,13 @@ if (!isset($_SESSION['loggedin']))
 				</li>
 				<li class="nav-item dropdown">
 					<li class="nav-item">
-                        <a class="nav-link" href="../logout.php">Wyloguj</a>
+						<a class="nav-link" href="../geo/index.php">Geolokalizacja</a>
                     </li>
 				</li>
 				<li class="nav-item dropdown">
 					<li class="nav-item">
-                        <a class="nav-link" href="../geo/index.php">Wyloguj</a>
-                    </li>
+						<a class="nav-link" href="../logout.php">Wyloguj</a>
+					</li>
 				</li>
  
 			</ul> 

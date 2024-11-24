@@ -1,6 +1,6 @@
-<?php declare(strict_types=1);  /* Ta linia musi byc pierwsza */ 
+<?php declare(strict_types=1);  /* Ta linia musi być pierwsza */ 
 session_start();
-if (!isset($_SESSION['loggedin']))
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true)
 {
 	header('Location: ../zadanie.php');
 	exit();
@@ -30,9 +30,11 @@ if (!isset($_SESSION['loggedin']))
 	<div id='myHeader'> </div>	
 	<main> 
 		<section class="sekcja1">	
-			Polecenie 2.2
+			<div class="container-fluid">
+				Strona powitalna. Zanim może się ona pojawić, powinno się zrealizować proces logowania, a na każdej stronie aplikacji powinno się sprawdzać sesję.
+			</div>	
 		</section>
 	</main>	
-	<?php require_once 'footer.php'; ?>			
+	<?php require_once 'footer.php'; ?>	
 </body>
 </html>

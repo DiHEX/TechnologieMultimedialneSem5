@@ -26,7 +26,7 @@ if (!isset($_SESSION['loggedin']))
 	<script type="text/javascript" src="twoj_js.js"></script> 
 </head>
 
-<body onload="myLoadHeader()">
+<body onload="myLoadHeaderSamePath()">
 	<div id='myHeader'> </div>	
 	<main> 
 		<section class="sekcja1">	

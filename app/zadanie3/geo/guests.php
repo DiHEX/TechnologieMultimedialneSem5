@@ -31,7 +31,7 @@ if ($details->country != "PL") {
 <body>
     <div class="container">
         <h1>Lista gości</h1>
-        <a href="/z2">Powrót do strony głównej laboratorium</a>
+        <a href="index.php">Wróć</a>
         <hr />
 
         <p style="font-weight: bold;">
