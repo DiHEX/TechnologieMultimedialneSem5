@@ -4,5 +4,6 @@
         header('Location: ../zadanie.php');
         exit();
     }
-    echo phpinfo ();
+    echo "<a href=\"index.php\">Wróć</a>\n";
+    echo phpinfo();
 ?>

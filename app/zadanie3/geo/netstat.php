@@ -1,12 +1,10 @@
 <?php
-    session_start();
+
+session_start();
     if (!isset($_SESSION["loggedin"])) {
         header('Location: ../zadanie.php');
         exit();
     }
-?>
-
-<?php
 
 /**
  * netstat.php - Show online status of hosts and services
@@ -219,13 +217,410 @@ function genConfig(){
 	if($fi===false) die("Error opening ".$_SERVER['PHP_SELF']);
 	
 	$fo=fopen($config['configfile'],'w');
-		if($fo===false) die("Error opening config file for writing");
-		while(!feof($fi)){
-			$line=fgets($fi);
-			if($line===false) break;
-			fwrite($fo,$line);
+	if($fo===false) die("Error opening ".$config['configfile']);
+	fwrite($fo, "<?php\n");
+	fwrite($fo, "/*\n");
+	fwrite($fo, " * This file contains the commented defaults.  Feel free to delete\n");
+	fwrite($fo, " * the unused options. \n");
+	fwrite($fo, " */\n");
+	
+	while(($l=fgets($fi,400))!== false){
+		if (trim($l)=='$config=array();'){
+			break;
 		}
-		fclose($fi);
-		fclose($fo);
-		echo "Config file created successfully!\n";
 	}
+	while(($l=fgets($fi))!== false){
+		if(trim($l)=='}' || trim($l)=='return $config;'){
+			break;
+		}
+		fwrite($fo,preg_replace('/\$config\[[\'"]([^\'"]+)[\'"]\]/','\$$1',"//".trim($l))."\n");
+	}
+	fclose($fi);
+	fclose($fo);
+}
+
+/**
+ * Quick way to create status update.  
+ * You shouldn't have to think about what todo when you have problems
+ * Run from command line only!
+ */
+function genStatusUpdate(){
+	global $config;
+
+	$date=date('Y-m-d H:i O');
+	$message=readline("Enter the message you would like to use:");
+	$statusstr=<<<EOT
+<p><b>Status as of $date</b><br />
+$message
+</p>
+EOT;
+
+	if((file_exists($config['alertfile']) && is_writable($config['alertfile'])) || is_writable(dirname($config['alertfile']))){
+		$fp=fopen($config['alertfile'],'w');
+		if($fp===false) die("Error writing alert file!");
+		fwrite($fp, $statusstr);
+		fclose($fp);
+	}else{
+	  die("File Exists/Not Writable");
+	}
+
+}
+
+/**
+ * RSS code
+ */
+function rss(){
+	global $config;
+	if(!$config['rssfeed']){
+		// RSS requested even though it was disabled
+		exit;
+	}
+	header("Content-Type: application/rss+xml");
+	echo "<?xml version=\"1.0\"?><rss version=\"2.0\">\n<channel>\n";
+	echo "<title>{$config['rsstitle']}</title>\n<link>{$config['rsslink']}</link>\n";
+	echo "<description>{$config['rsstitle']}</description>\n";
+	echo "<language>en</language>\n";
+	if (file_exists($config['alertfile']) && is_readable($config['alertfile']))
+	{
+		echo "<item>\n<title>Alert ".date($config['rssdatetime'], filemtime($config['alertfile']))
+		. " for {$config['rsstitle']}</title>\n";
+		echo '<pubDate>'.date("r", filemtime($config['alertfile']))."</pubDate>\n";
+		echo "<link>{$config['rsslink']}</link>\n";
+		echo '<description><![CDATA[';
+		@include($config['alertfile']);
+		echo "]]></description>\n</item>\n";
+	}
+	echo "</channel>\n</rss>\n";
+}
+
+/**
+ * HTML Code
+ * @param cache Cache object
+ */
+function html($cache){
+	global $config;
+	// output HTML/page header
+	echo $config['htmlheader'];
+	
+	// headline, date and time and start of table
+	echo "<h1>{$config['headline']}</h1>\n";
+	if ($config['datetime']) echo '<p class="datetime">as of ' . date($config['datetime']) . "</p>\n";
+	
+	// show the contents of $alertfile if it is readable and larger than 2 bytes
+	if (file_exists($config['alertfile']) && is_readable($config['alertfile']))
+	{
+		clearstatcache();
+		if (filesize($config['alertfile']) > 2)
+		{
+			echo "<div id=\"alert\">\n";
+			@include($config['alertfile']);
+			echo "</div>\n";
+		}
+	}
+	
+	// show a simple progress indicator
+	if (($_REQUEST['noprogress'] !== NULL) || ($argv[1] == 'noprogress'))
+	{
+		$config['progressindicator'] = $FALSE;
+	}
+	if ($config['progressindicator'])
+	{
+		echo '<script type="text/javascript">
+		document.write("<div id=\"progress\">Checks in progress ...</div>");'
+		."</script>\n";
+	}
+	echo "<a href=\"index.php\">Wróć</a>\n";
+	echo "<table class=\"status_table\">\n";
+	
+	// main loop of checks
+	foreach ($config['checks'] as $check)
+	{
+		$status = $config['offline'];  // default state
+		$diagnostics = '';   // mouse-over for tooltips
+		$output = TRUE;      // print a line or print no line
+		list($host,$port,$description) = explode('|',"$check||"); // the 2 extra '|'s are to avoid notices about undefined offsets
+		$host = trim($host);
+		$port = trim($port);
+	
+		switch ($port)
+		{
+			case '': // ignore lines with empty port
+				$output = FALSE; break;
+			case (substr($port,0,1)=='-'): // negative ports, '-ping', and
+			    // any "port" starting with '-' is considered a disabled check
+				$output = FALSE; break;
+			case 'headline': // print a headline within the status table
+				// we enclose it with invisible <br>== == for nicer text output
+				echo '<tr><td class="headline" colspan="2">'
+					. '<span class="hidden">&nbsp;<br />==&nbsp;</span>'
+					. $host
+					. '<span class="hidden">&nbsp;==</span>'
+					. "</td></tr>\n";
+				$output = FALSE; break;
+			case 'ping': // do an ICMP ping
+				$ping=exec("{$config['ping_command']} $host",$pingoutput,$pingreturn);
+				// This should continue on into ping6 as they share everything but the command. 
+			case 'ping6': // do an ICMP ping
+				if(!isset($ping)){
+					$ping=exec("{$config['ping6_command']} $host",$pingoutput,$pingreturn);
+				}
+				if(strlen($ping)>10) 
+				{
+					// strlen($ping)>10 works around a bug in Debian ping (", pipe 3")
+					// http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=456192
+					$status = $config['online']; $diagnostics = "$ping :: $pingreturn"; 
+				}
+				else $diagnostics = "$ping :: $pingreturn";
+				// uncomment this if you want the full output as HTML comment
+				//echo "\n<!-- "; print_r($pingoutput); echo "-->\n";
+				// *nix ping command's return value meanings:
+				// 0: all OK; 1: an error occured; 2: host unknown
+				unset($pingoutput);
+				unset($ping);
+				break;
+			default: // look if a TCP connection to port can be opened
+				$time_start = microtime(true);
+				$fp = @fsockopen($host, $port, $errno, $errstr, $config['timeout']);
+				$time_end = microtime(true);
+				$time = number_format(($time_end - $time_start)*1000,1);
+	  
+				if ($fp)
+				{
+					// fsockopen worked, service is online
+					$status = $config['online'];
+					$diagnostics = "$time ms";
+					fclose($fp);
+				}
+				else if ($errno<0) { $diagnostics = "errno=$errno; Host unknown?"; }
+				else { $diagnostics = $errstr; }
+		}
+		
+		// output results
+		if ($output)
+		echo "<tr><td>$description</td><td class=\"$status\" title=\"$diagnostics\">$status</td></tr>\n";
+		$cache->flush();
+	}
+	
+	echo "</table>\n";
+	
+	// make progress indicator disappear by means of Javascript
+	if ($config['progressindicator']) {
+		echo <<<EOT
+<script>
+progressindicator = document.getElementById("progress");
+progressindicator.innerHTML = "asdf";
+progressindicator.style.visibility = 'hidden';
+</script>
+EOT;
+	}
+	
+	// output $version and HTML/page footer
+	if (!empty($config['version'])) echo "<p class=\"version\">{$config['version']}</p>\n";
+	echo "{$config['htmlfooter']}\n";
+
+}
+
+/**
+ * Class to wrap caching and simplifiy reuse
+ */
+class cache{
+
+	/**
+	 * @var string
+	 * File to cache in
+	 */
+	private $file;
+
+	/**
+	 * @var string
+	 * Time to keep cache
+	 */
+	private $time;
+
+	/**
+	 * @var int
+	 * Timestamp of cache file. 
+	 */
+	private $filetime;
+	
+	/**
+	 * @var string
+	 * Buffer to store the output in for later caching so the page can be flushed.
+	 */
+	private $buffer='';
+	
+	/**
+	 * @var bool
+	 * If caching is enabled
+	 */
+	private $enabled=false;
+
+	/**
+	 * Constructor
+	 * On new cache() run this
+	 * @param string File to cache in
+	 * @param array The config array
+	 */
+	public function __construct($file, $config){
+		if($config['cachepath']!=null && $config['cachepath']!=false && $config['cachetime']>0){
+			// Caching isn't disabled explicitly.  Continue
+			$this->file=$config['cachepath'].'/'.$file;
+			$this->time=$config['cachetime'];
+
+			// If output_buffering isn't small the progress indicator won't function properly
+			$output_buffering = ini_get("output_buffering");
+			if($config['progressindicator']==TRUE && $output_buffering > 0){
+				error_log("warning: progressindicator incompatible with php.ini output_buffering > 0. Caching disabled! Create a .htaccess with the contents: php_value output_buffering \"0\"");
+				return;
+			}
+			if((file_exists($this->file) && is_writable($this->file)) || is_writable(dirname($this->file))){
+					// We can wrte to the cache dirs enable caching.
+					//   No sense caching if we can't write!
+					$this->enabled=true;
+			}
+		}
+	}
+	
+	/**
+	 * Check if the file is cached and still valid
+	 * @return bool
+	 */
+	private function isCached(){
+		$this->filetime=@filemtime($this->file);
+		if(file_exists($this->file) && (time() - $this->time <$this->filetime)){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Caching Start function.
+	 * If it finds the file is already cached it will return the cached file and 
+	 * exit. Otherwise will ob_start()
+	 */
+	public function start(){
+		if(!$this->enabled)return;
+		if($this->isCached()){
+			// Cache is good.  Return the file and exit!
+			@include $this->file;
+			echo "<!-- Cached ".date('jS F Y H:i', $this->filetime)."-->";
+			exit;
+		}
+		// Need to create cache buffer output.
+		ob_start();
+	}
+	
+	/**
+	 * Store the page to our internal buffer and send the current page contents out.
+	 */
+	public function flush(){
+		if($this->enabled){
+			// Store the contents
+			$this->buffer.=ob_get_contents();
+			// Flush contents of the buffer
+			ob_flush();
+		}
+		// Send to browser
+		flush();
+	}
+	
+	/**
+	 * Caching end function
+	 * Writes the output to a file so it is cached for the next requests. 
+	 */
+	public function end(){
+		if(!$this->enabled)return;
+		if((file_exists($this->file) && is_writable($this->file)) || is_writable(dirname($this->file))){
+			// We can write the cache lets get the buffer contents and write it. 
+			$fp=fopen($this->file,'w');
+			fwrite($fp, $this->buffer . ob_get_contents());
+			fclose($fp);
+			// Close the buffer and send the remaining contents to the browser
+			ob_end_flush();
+		}
+	}
+}
+
+
+
+
+// ------------------------------------------------- controler part of script
+
+// Get the default config
+$config = defaultConfig();
+
+// Check first for genconfig before we try to parseConfig
+if($argv[1] == 'genconfig'){
+	genConfig();
+	exit;
+}
+
+// Parse the user's config
+$config = parseConfig($config['configfile'], $config);
+
+
+// Main Controler
+if($_REQUEST['rss'] !== NULL or $argv[1] == 'rss'){
+	// Run rss()
+	// Create instance of cache class.  
+	$cache=new cache('rss.xml',$config);
+	// Start the caching engine
+	$cache->start();
+	// Do the actuall rss function
+	rss();
+	// End the rss engine
+	$cache->end();
+}else if($argv[1] == 'setstatus'){
+	genStatusUpdate();
+}else if($argv[1] == '-h' || $argv[1] == '--help'){
+	echo <<<EOT
+{$config['version']} Help
+	rss - Output RSS
+	setstatus - netstat.txt generation helper
+	genconfig - generate sample netstat.conf.php
+	
+EOT;
+}else{
+	// Create instance of cache class.  
+	$cache=new cache('index.html',$config);
+	// Start the caching engine
+	$cache->start();
+	// Do the actuall html function
+	html($cache);
+	// End the rss engine
+	$cache->end();
+}
+
+
+/*
+ * License
+ *
+ * This script is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This script is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this script; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA  02111-1307  USA
+ 
+ * History
+ *
+ * 0.09 * 2009-10-26  first buggy "punish me" alpha release candidate
+ * 0.10 * 2009-11-07  added stopwatch (time diagnostics) for online services
+ * 0.11 * 2009-11-09  added RSS feed option for alerts
+ * 0.12 * 2009-11-12  cleaned up and simplified settings mechanism
+ * 0.13 * 2009-11-18  $alertfile is only included if larger than 2 bytes
+ * 0.14 * 2009-12-05  Default CSS code change to improve font size scaling
+ * 0.15 * 2012-08-04  added ping6 (suggested by Todd Johnson; thanks!)
+ * 1.x  * 2012-..-..  New version by Todd Johnson w/ caching, setstatus, ...
+ *
+ */
+
+?>
