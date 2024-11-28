@@ -6,7 +6,7 @@ CREATE TABLE `users` (
 
 ALTER TABLE `users` ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `users` MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `users` MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 INSERT INTO 
     `users` (`id`, `username`, `password`) 
@@ -32,3 +32,16 @@ CREATE TABLE goscieportalu (
     language VARCHAR(50), -- Język przeglądarki
     ilosc INT DEFAULT 0
 );
+
+
+CREATE TABLE `hosts` (
+  `id` smallint(6) NOT NULL,
+  `host` text NOT NULL,
+  `port` int NOT NULL,
+  `userId` smallint(6),
+  FOREIGN KEY (`userId`) REFERENCES `users`(`id`)
+);
+
+ALTER TABLE `hosts` ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `hosts` MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
