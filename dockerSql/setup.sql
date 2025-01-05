@@ -45,3 +45,22 @@ CREATE TABLE `hosts` (
 ALTER TABLE `hosts` ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `hosts` MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+-- Create table for login history
+CREATE TABLE login_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255),
+    ip_address VARCHAR(255),
+    loc VARCHAR(255),
+    user_agent VARCHAR(255),
+    login_time VARCHAR(255)
+);
+
+-- Create table for invalid logins
+CREATE TABLE invalid_logins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255),
+    last_entry_date VARCHAR(255),
+    last_ip_address VARCHAR(255),
+    count INT
+);

@@ -3,6 +3,7 @@ FROM php:apache-bullseye
 
 # Copy your application files to the container
 COPY ./app /var/www/html
+COPY php.ini /usr/local/etc/php/
 
 # Copy custom configuration files
 COPY ./default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
@@ -26,3 +27,6 @@ RUN service apache2 restart
 
 RUN mkdir /var/www/html/files
 RUN chmod 777 /var/www/html/files
+
+RUN mkdir /var/www/html/user_storage
+RUN chmod 777 /var/www/html/user_storage

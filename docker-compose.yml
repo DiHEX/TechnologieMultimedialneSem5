@@ -28,6 +28,7 @@ services:
       - ./certs/apache-selfsigned.crt:/etc/ssl/certs/apache-selfsigned.crt
       - ./certs/apache-selfsigned.key:/etc/ssl/private/apache-selfsigned.key
       - ./files:/var/www/html/files
+      - ./php.ini:/usr/local/etc/php/php.ini
     working_dir: /app
     ports:
       - "8080:80"

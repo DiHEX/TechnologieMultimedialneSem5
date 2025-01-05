@@ -1,7 +1,7 @@
 <?php
-session_start();
-if (isset($_SESSION["zscan-logged-in"])) {
-    header("Location: /zadanie4");
+//session_start();
+if (isset($_SESSION["zadanie5-logged-in"])) {
+    header("Location: /zadanie5");
 }
 ?>
 <!DOCTYPE html>
@@ -14,7 +14,7 @@ if (isset($_SESSION["zscan-logged-in"])) {
     <div class="container">
         <h1>Formularz logowania</h1>
 
-        <form method="POST" action="/zadanie4/auth/login-handle.php">
+        <form method="POST" action="/zadanie5/auth/login-handle.php">
             <div class="form-group">
                 <?php
                 if (isset($_GET['status']) && $_GET["status"] == "requires-login") {
@@ -36,7 +36,8 @@ if (isset($_SESSION["zscan-logged-in"])) {
             </div>
 
             <div class="form-group">
-                <div><a href="/zadanie4/auth/register-form.php">Zarejestruj się.</a></div>
+                <div>Chcesz się zarejestrować?</div>
+                <div><a href="/zadanie5/auth/register-form.php">Zarejestruj się teraz!</a></div>
             </div>
 
             <div class="form-group">

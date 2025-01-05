@@ -1,17 +1,17 @@
 <?php
 session_start();
-if (isset($_SESSION["zscan-logged-in"])) {
-    header("Location: /zadanie4");
+if (isset($_SESSION["zadanie5-logged-in"])) {
+    header("Location: /zadanie5");
 }
 ?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <title>Kalinowski</title>
+    <title>Kalinowskiejestracja</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <body>
-<form method="POST" action="/zadanie4/auth/register-handle.php">
+<form method="POST" action="/zadanie5/auth/register-handle.php">
     <div class="container">
         <h1>Formularz rejestracji</h1>
 
@@ -41,7 +41,8 @@ if (isset($_SESSION["zscan-logged-in"])) {
         </div>
 
         <div class="form-group">
-            <p><a href="/zadanie4/auth/login-form.php">Zaloguj się.</a></p>
+            <p>Chcesz się zalogować?</p>
+            <p><a href="/z3/auth/login-form.php">Zaloguj się teraz!</a></p>
         </div>
 
         <div>
