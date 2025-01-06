@@ -25,14 +25,16 @@ RUN a2enmod mime
 RUN a2ensite default-ssl
 RUN service apache2 restart
 
-RUN mkdir /var/www/html/files
+RUN cd /var/www/html
+
+#RUN mkdir /var/www/html/files
 RUN chmod 777 /var/www/html/files
 
-RUN mkdir /var/www/html/user_storage
+#RUN mkdir /var/www/html/user_storage
 RUN chmod 777 /var/www/html/user_storage
 
-RUN mkdir /var/www/html/songs
+#RUN mkdir /var/www/html/songs
 RUN chmod 777 /var/www/html/songs
 
-RUN mkdir /var/www/html/films
+#RUN mkdir /var/www/html/films
 RUN chmod 777 /var/www/html/films
