@@ -31,7 +31,7 @@ if (! in_array($file_extension, ["mp4", "mkv", "avi"])) {
 
 $path_base = "/var/www/html/films";
 $path_file = "$path_base/$file_name.$file_extension";
-$path_url_file = "/var/www/html/films/$file_name.$file_extension";
+$path_url_file = "/films/$file_name.$file_extension";
 move_uploaded_file($film_file["tmp_name"], $path_file);
 
 $idft_query = $db->prepare("SELECT idft FROM filmtype WHERE name=?");

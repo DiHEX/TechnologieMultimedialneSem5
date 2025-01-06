@@ -86,7 +86,7 @@ $idu_query->fetch();
                     <td>{$row['director']}</td>
                     <td>{$row['datetime']}</td>
                     <td>{$row['subtitle']}</td>
-                    <td><video controls style='display: inline;'><source src='{$row['filename']}'></video></td>
+                    <td><video controls><source src='{$row['filename']}'></video></td>
                 </tr>";
             }
         ?>
