@@ -51,6 +51,10 @@ if ($currentSubDir == "/") {
     $baseDirPath = "/var/www/html/user_storage/{$_SESSION["zadanie5-logged-in"]}";
     $dirPath = $baseDirPath . $currentSubDir;
 
+    if (!is_dir($dirPath)) {
+        mkdir($dirPath, 0777, true);
+    } 
+
     if (is_dir($dirPath)) {
         $files = array_filter(scandir($dirPath), function($path) {
            return !str_starts_with($path, ".");
