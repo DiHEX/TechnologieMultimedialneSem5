@@ -30,3 +30,9 @@ RUN chmod 777 /var/www/html/files
 
 RUN mkdir /var/www/html/user_storage
 RUN chmod 777 /var/www/html/user_storage
+
+RUN mkdir /var/www/html/songs
+RUN chmod 777 /var/www/html/songs
+
+RUN mkdir /var/www/html/films
+RUN chmod 777 /var/www/html/films

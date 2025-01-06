@@ -64,3 +64,98 @@ CREATE TABLE invalid_logins (
     last_ip_address VARCHAR(255),
     count INT
 );
+
+
+CREATE TABLE playlistname (
+    idpl INT AUTO_INCREMENT PRIMARY KEY,
+    idu INT,
+    name VARCHAR(255),
+    public BOOLEAN ,
+    datetime VARCHAR(255)
+);
+
+CREATE TABLE songs (
+    ids INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    musician VARCHAR(255),
+    datetime VARCHAR(255),
+    idu INT,
+    filename VARCHAR(255),
+    lyrics VARCHAR(255),
+    idmt INT
+);
+
+
+CREATE TABLE musictype(
+    idmt INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE playlistdatabase (
+    idpldb INT AUTO_INCREMENT PRIMARY KEY,
+    idpl INT,
+    ids INT,
+    FOREIGN KEY (idpl) REFERENCES playlistname(idpl),
+    FOREIGN KEY (ids) REFERENCES songs(ids)
+);
+
+INSERT INTO musictype (idmt, name) VALUES
+(1, 'pop'),
+(2, 'rock'),
+(3, 'hip-hop'),
+(4, 'electronic dance'),
+(5, 'R&B'),
+(6, 'latin'),
+(7, 'country'),
+(8, 'metal'),
+(9, 'jazz'),
+(10, 'classic'),
+(11, 'inny');
+
+
+
+CREATE TABLE films (
+    ids INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    director VARCHAR(255),
+    datetime VARCHAR(255),
+    idu INT,
+    filename VARCHAR(255),
+    subtitle VARCHAR(255),
+    idft INT
+);
+
+CREATE TABLE filmtype (
+    idft INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE playlistnameFilms (
+    idpl INT AUTO_INCREMENT PRIMARY KEY,
+    idu INT,
+    name VARCHAR(255),
+    public BOOLEAN,
+    datetime VARCHAR(255)
+);
+
+CREATE TABLE playlistdatabaseFilms (
+    idpldb INT AUTO_INCREMENT PRIMARY KEY,
+    idpl INT,
+    ids INT,
+    FOREIGN KEY (idpl) REFERENCES playlistnameFilms(idpl),
+    FOREIGN KEY (ids) REFERENCES films(ids)
+);
+
+
+INSERT INTO filmtype (idft, name) VALUES
+(1, 'dokument'),
+(2, 'reportaż'),
+(3, 'publicystyka'),
+(4, 'film akcji'),
+(5, 'sci-fi'),
+(6, 'horror'),
+(7, 'familijny'),
+(8, 'przyrodniczy'),
+(9, 'koncert'),
+(10, 'animowany'),
+(11, 'inny');

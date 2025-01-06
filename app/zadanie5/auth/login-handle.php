@@ -15,7 +15,7 @@ $user_login = $_POST["login-form-login"];
 $user_password = $_POST["login-form-password"];
 
 try {
-    $db = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_database");;
+    $db = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_database");
     if ($db->connect_error) throw new InvalidArgumentException("Database error");
 
     $login_query = $db->prepare("SELECT username FROM users WHERE username=? AND password=?");

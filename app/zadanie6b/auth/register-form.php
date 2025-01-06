@@ -1,17 +1,17 @@
 <?php
 session_start();
-if (isset($_SESSION["zadanie5-logged-in"])) {
-    header("Location: /zadanie5");
+if (isset($_SESSION["zadanie6b-logged-in"])) {
+    header("Location: /zadanie6b");
 }
 ?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <title>Kalinowskiejestracja</title>
+    <title>Kalinowski</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <body>
-<form method="POST" action="/zadanie5/auth/register-handle.php">
+<form method="POST" action="/zadanie6b/auth/register-handle.php">
     <div class="container">
         <h1>Formularz rejestracji</h1>
 
@@ -42,7 +42,7 @@ if (isset($_SESSION["zadanie5-logged-in"])) {
 
         <div class="form-group">
             <p>Chcesz się zalogować?</p>
-            <p><a href="/zadanie5/auth/login-form.php">Zaloguj się teraz!</a></p>
+            <p><a href="/zadanie6b/auth/login-form.php">Zaloguj się teraz!</a></p>
         </div>
 
         <div>
