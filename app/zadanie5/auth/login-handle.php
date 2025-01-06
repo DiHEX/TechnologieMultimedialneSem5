@@ -38,7 +38,7 @@ try {
         $inv_get_query->store_result();
 
         $now = new DateTime();
-        $then = new DateTime($login_attempt_date);
+        $then = $login_attempt_date ? new DateTime($login_attempt_date) : new DateTime();
         $diff = $now->diff($then);
         $minutes = ($diff->format('%a') * 1440) +
             ($diff->format('%h') * 60) +
