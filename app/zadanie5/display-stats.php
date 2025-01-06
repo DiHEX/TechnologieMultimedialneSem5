@@ -16,7 +16,7 @@ if (! isset($_SESSION["zadanie5-logged-in"])) {
 </head>
 <body>
 <div class="container">
-    <h1>Lab 4 - chmura</h1>
+    <h1>Lab 5</h1>
     <a href="/zadanie5">Powrót do strony laboratorium</a>
     <hr />
 
