@@ -1,0 +1,60 @@
+.container {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background-color: rgba(0, 0, 0, 50%);
+    padding: 50px;
+    border-radius: 10px;
+    color: white;
+}
+
+.form-group {
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+.container a, .container a:visited, .container a:focus {
+    color: inherit;
+}
+
+ul.choice-list, ol.choice-list {
+    margin-top: 20px;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.choice-list a, .choice-list a:visited, .choice-list a:active {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+    border: 1px solid black;
+    display: block;
+    text-decoration: none;
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    color: black;
+    transition: 0.1s background-color ease-in-out;
+}
+
+.choice-list a:hover {
+    background-color: #dedede;
+}
+
+.choice-list p {
+    color: white;
+}
+
+table, tr, td, th {
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 3px;
+}
+
+.container .btn {
+    border-width: 1px;
+    border-color: #fafafa;
+}
