@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS tm_mysql_database;
+USE tm_mysql_database;
+
 CREATE TABLE `users` (
     `id` smallint(6) NOT NULL,
     `username` varchar(128) COLLATE utf8_polish_ci NOT NULL,
