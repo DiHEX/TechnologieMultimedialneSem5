@@ -87,7 +87,7 @@ $idu_query->fetch();
                     <td>{$row['director']}</td>
                     <td>{$row['datetime']}</td>
                     <td>{$row['subtitle']}</td>
-                    <td><video controls><source src='{$row['filename']}'></video></td>
+                    <td><video controls style=\"width: 600px; height: 400px;\"><source src='{$row['filename']}'></video></td>
                 </tr>";
             }
         ?>
@@ -145,7 +145,7 @@ $idu_query->fetch();
             $html_films .= "
             <tr>
                 <td>{$result_film["title"]} - {$result_film["director"]}</td>
-                <td><video controls style='display: inline;'><source src='{$result_film['filename']}'></video></td>
+                <td><video style=\"width: 600px; height: 400px;\" controls style='display: inline;'><source src='{$result_film['filename']}'></video></td>
             </tr>
             ";
         }
