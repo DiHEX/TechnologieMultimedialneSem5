@@ -67,7 +67,7 @@ $idu_query->fetch();
 
     <hr />
 
-    <div style="text-align: center;">
+    <div style="text-align: center;" name="playlist-show">
         <?php
             $query = "SELECT * FROM films";
             $result = $db->query($query);

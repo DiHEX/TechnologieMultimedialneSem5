@@ -67,6 +67,54 @@ $idu_query->fetch();
 
     <hr />
 
+    <div style="text-align: center;" name="playlist-show">
+        <?php
+            $query = "SELECT * FROM songs";
+            $result = $db->query($query);
+            $videos = [];
+            while ($row = $result->fetch_assoc()) {
+            $videos[] = $row['filename'];
+            }
+        ?>
+        <audio id="videoPlayer" controls>
+            <source src="<?php echo $videos[0]; ?>">
+        </audio>
+        <script>
+            const videos = <?php echo json_encode($videos); ?>;
+            let currentVideoIndex = 0;
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            videoPlayer.addEventListener('ended', () => {
+            currentVideoIndex++;
+            if (currentVideoIndex < videos.length) {
+                videoPlayer.src = videos[currentVideoIndex];
+                videoPlayer.play();
+            }
+            });
+        </script>
+        <br />
+        <button id="prevButton" class="btn btn-primary">Poprzedni</button>
+        <button id="nextButton" class="btn btn-primary">Następny</button>
+
+        <script>
+            document.getElementById('prevButton').addEventListener('click', () => {
+                if (currentVideoIndex > 0) {
+                    currentVideoIndex--;
+                    videoPlayer.src = videos[currentVideoIndex];
+                    videoPlayer.play();
+                }
+            });
+
+            document.getElementById('nextButton').addEventListener('click', () => {
+                if (currentVideoIndex < videos.length - 1) {
+                    currentVideoIndex++;
+                    videoPlayer.src = videos[currentVideoIndex];
+                    videoPlayer.play();
+                }
+            });
+        </script>
+    </div>
+
     <h2>Lista piosenek</h2>
 
     <table>
@@ -92,79 +140,6 @@ $idu_query->fetch();
             }
         ?>
     </table>
-
-    <hr />
-
-    <h2>Utwórz playlistę</h2>
-    <form action="playlist-add.php" method="POST">
-        <div class="form-group">
-            <label>Nazwa playlisty</label>
-            <input type="text" class="form-control" placeholder="(nazwa)" name="playlist-name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="is-public">Czy publiczna?</label>
-            <input type="checkbox" class="form-checkbox" placeholder="(nazwa)" name="playlist-public" id="is-public">
-        </div>
-
-        <div class="form-group">
-            <label>Wybierz piosenki</label><br/>
-
-            <div>
-                <?php
-                $query = "SELECT * FROM songs";
-                $result = $db->query($query);
-                while ($row = $result->fetch_assoc()) {
-                    echo "<div><input type='checkbox' name='playlist-song[]' value='{$row['ids']}' id='playlist-song-{$row['ids']}' /><label for='playlist-song-{$row['ids']}'>{$row['title']} - {$row['musician']}</label></div>";
-                }
-                ?>
-            </div>
-        </div>
-
-        <input type="submit" value="Zapisz playlistę" class="btn btn-success" />
-    </form>
-
-    <hr />
-
-    <h2 id="playlist-show">Wyświetl playlisty</h2>
-
-    <?php
-    $query = "SELECT * FROM playlistname";
-    $result = $db->query($query);
-    while ($row = $result->fetch_assoc()) {
-        if ($row['public'] == 0 && $row['idu'] != $current_user_idu) {
-            continue;
-        }
-
-        $html_songs = "";
-        $result_songs = $db->query("SELECT * FROM playlistdatabase WHERE idpl=" . $row["idpl"]);
-        while ($row_song = $result_songs->fetch_assoc()) {
-            $song_id = $row_song["ids"];
-            $result_song = $db->query("SELECT * FROM songs WHERE ids=".$song_id)->fetch_assoc();
-
-            $html_songs .= "
-            <tr>
-                <td>{$result_song["title"]} - {$result_song["musician"]}</td>
-                <td><audio controls><source src='{$result_song['filename']}'></audio></td>
-            </tr>
-            ";
-        }
-
-        $publicString = $row['public'] == 1 ? 'Tak' : 'Nie';
-        echo "
-        <table style='margin-bottom: 25px;'>
-            <tr>
-                <td colspan='2' style='background-color: #dadada; color: black;'>Playlista: {$row['name']}</td>
-            </tr>
-            <tr>
-                <td colspan='2' style='background-color: #dadada; color: black;'>Publiczna: {$publicString}</td>
-            </tr>
-            $html_songs
-        </table>
-        ";
-    }
-    ?>
-
 </div>
 </body>
 </html>
