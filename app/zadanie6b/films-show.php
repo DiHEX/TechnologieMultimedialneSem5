@@ -67,8 +67,56 @@ $idu_query->fetch();
 
     <hr />
 
-    <h2>Lista filmów</h2>
+    <div style="text-align: center;">
+        <?php
+            $query = "SELECT * FROM films";
+            $result = $db->query($query);
+            $videos = [];
+            while ($row = $result->fetch_assoc()) {
+            $videos[] = $row['filename'];
+            }
+        ?>
+        <video id="videoPlayer" controls style="width:800px; height: 500px;">
+            <source src="<?php echo $videos[0]; ?>">
+        </video>
+        <script>
+            const videos = <?php echo json_encode($videos); ?>;
+            let currentVideoIndex = 0;
+            const videoPlayer = document.getElementById('videoPlayer');
 
+            videoPlayer.addEventListener('ended', () => {
+            currentVideoIndex++;
+            if (currentVideoIndex < videos.length) {
+                videoPlayer.src = videos[currentVideoIndex];
+                videoPlayer.play();
+            }
+            });
+        </script>
+        <br />
+        <button id="prevButton" class="btn btn-primary">Poprzedni</button>
+        <button id="nextButton" class="btn btn-primary">Następny</button>
+
+        <script>
+            document.getElementById('prevButton').addEventListener('click', () => {
+                if (currentVideoIndex > 0) {
+                    currentVideoIndex--;
+                    videoPlayer.src = videos[currentVideoIndex];
+                    videoPlayer.play();
+                }
+            });
+
+            document.getElementById('nextButton').addEventListener('click', () => {
+                if (currentVideoIndex < videos.length - 1) {
+                    currentVideoIndex++;
+                    videoPlayer.src = videos[currentVideoIndex];
+                    videoPlayer.play();
+                }
+            });
+        </script>
+    </div>
+
+    <h2>Lista filmów</h2>
+           
     <table>
         <tr>
             <th>Title</th>
@@ -77,7 +125,7 @@ $idu_query->fetch();
             <th>Subtitles</th>
             <th>Video</th>
         </tr>
-
+            
         <?php
             $query = "SELECT * FROM films";
             $result = $db->query($query);
@@ -92,79 +140,6 @@ $idu_query->fetch();
             }
         ?>
     </table>
-
-    <hr />
-
-    <h2>Utwórz playlistę</h2>
-    <form action="playlist-add.php" method="POST">
-        <div class="form-group">
-            <label>Nazwa playlisty</label>
-            <input type="text" class="form-control" placeholder="(nazwa)" name="playlist-name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="is-public">Czy publiczna?</label>
-            <input type="checkbox" class="form-checkbox" placeholder="(nazwa)" name="playlist-public" id="is-public">
-        </div>
-
-        <div class="form-group">
-            <label>Wybierz filmy</label><br/>
-
-            <div>
-                <?php
-                $query = "SELECT * FROM films";
-                $result = $db->query($query);
-                while ($row = $result->fetch_assoc()) {
-                    echo "<div><input type='checkbox' name='playlist-film[]' value='{$row['ids']}' id='playlist-film-{$row['ids']}' /><label for='playlist-film-{$row['ids']}'>{$row['title']} - {$row['director']}</label></div>";
-                }
-                ?>
-            </div>
-        </div>
-
-        <input type="submit" value="Zapisz playlistę" class="btn btn-success" />
-    </form>
-
-    <hr />
-
-    <h2 id="playlist-show">Wyświetl playlisty</h2>
-
-    <?php
-    $query = "SELECT * FROM playlistnameFilms";
-    $result = $db->query($query);
-    while ($row = $result->fetch_assoc()) {
-        if ($row['public'] == 0 && $row['idu'] != $current_user_idu) {
-            continue;
-        }
-
-        $html_films = "";
-        $result_films = $db->query("SELECT * FROM playlistdatabaseFilms WHERE idpl=" . $row["idpl"]);
-        while ($row_song = $result_films->fetch_assoc()) {
-            $song_id = $row_song["ids"];
-            $result_film = $db->query("SELECT * FROM films WHERE ids=".$song_id)->fetch_assoc();
-
-            $html_films .= "
-            <tr>
-                <td>{$result_film["title"]} - {$result_film["director"]}</td>
-                <td><video style=\"width: 600px; height: 400px;\" controls style='display: inline;'><source src='{$result_film['filename']}'></video></td>
-            </tr>
-            ";
-        }
-
-        $publicString = $row['public'] == 1 ? 'Tak' : 'Nie';
-        echo "
-        <table style='margin-bottom: 25px;'>
-            <tr>
-                <td colspan='2' style='background-color: #dadada; color: black;'>Playlista: {$row['name']}</td>
-            </tr>
-            <tr>
-                <td colspan='2' style='background-color: #dadada; color: black;'>Publiczna: {$publicString}</td>
-            </tr>
-            $html_films
-        </table>
-        ";
-    }
-    ?>
-
 </div>
 </body>
 </html>
