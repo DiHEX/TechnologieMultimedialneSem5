@@ -165,8 +165,8 @@ INSERT INTO filmtype (idft, name) VALUES
 
 
 
-CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie7a;
-USE tm_mysql_zadanie7a;
+CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie7;
+USE tm_mysql_zadanie7;
 
 CREATE TABLE ajax_from_db (
   id smallint(6) NOT NULL,
@@ -180,3 +180,16 @@ ALTER TABLE ajax_from_db MODIFY id smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INC
 
 INSERT INTO ajax_from_db (text1) VALUES
 ('test1');
+
+CREATE TABLE pomiary (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    x1 FLOAT,
+    x2 FLOAT,
+    x3 FLOAT,
+    x4 FLOAT,
+    x5 FLOAT,
+    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO pomiary (x1, x2, x3, x4, x5) VALUES
+(1.1, 2.2, 3.3, 4.4, 5.5);

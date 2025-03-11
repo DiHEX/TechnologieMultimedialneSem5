@@ -1,5 +1,5 @@
 <?php
-$db = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_zadanie7a");
+$db = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_zadanie7");
 if (!$db)
 {
     echo "SQL error 1." . PHP_EOL;
