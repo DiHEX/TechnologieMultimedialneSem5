@@ -18,6 +18,10 @@
     <a href="zadanie6a/index.php">Zadanie 6a</a>
     <br>
     <a href="zadanie6b/index.php">Zadanie 6b</a>
+    <br>
+    <a href="zadanie7a/index.php">Zadanie 7a</a>
+    <br>
+    <a href="zadanie7b/index.php">Zadanie 7b</a>
 
 </body>
 </html> 

@@ -162,3 +162,21 @@ INSERT INTO filmtype (idft, name) VALUES
 (9, 'koncert'),
 (10, 'animowany'),
 (11, 'inny');
+
+
+
+CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie7a;
+USE tm_mysql_zadanie7a;
+
+CREATE TABLE ajax_from_db (
+  id smallint(6) NOT NULL,
+  text1 VARCHAR(40),
+  datetime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE ajax_from_db ADD PRIMARY KEY (id);
+
+ALTER TABLE ajax_from_db MODIFY id smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+INSERT INTO ajax_from_db (text1) VALUES
+('test1');
