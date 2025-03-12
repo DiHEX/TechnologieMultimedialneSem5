@@ -193,3 +193,43 @@ CREATE TABLE pomiary (
 
 INSERT INTO pomiary (x1, x2, x3, x4, x5) VALUES
 (1.1, 2.2, 3.3, 4.4, 5.5);
+
+
+CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie9;
+USE tm_mysql_zadanie9;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    ip VARCHAR(45),
+    registration_date DATETIME
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+    idk INT AUTO_INCREMENT PRIMARY KEY,
+    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    message TEXT,
+    user VARCHAR(50),
+    recipient VARCHAR(50),
+    attachment_url VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS login_history (
+    entry_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    login_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45),
+    loc VARCHAR(50),
+    user_agent TEXT
+);
+
+CREATE TABLE IF NOT EXISTS invalid_logins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    count INT,
+    last_entry_date DATETIME
+);
+
+INSERT INTO users (username, password, ip, registration_date) VALUES
+('admin', 'admin', '8.8.8.8', NOW());

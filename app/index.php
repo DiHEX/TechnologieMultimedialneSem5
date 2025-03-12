@@ -22,6 +22,8 @@
     <a href="zadanie7a/index.php">Zadanie 7a</a>
     <br>
     <a href="zadanie7b/index.php">Zadanie 7b</a>
+    <br>
+    <a href="zadanie9/index.php">Zadanie 9</a>
 
 </body>
 </html> 
