@@ -61,39 +61,96 @@
     </form>
 
     <hr />
-
+    
     <h1>Nadane do Ciebie</h1>
     <?php
-    $recipient = $_SESSION["zadanie9-logged-in"];
-    $where_clause = $recipient == "admin" ? "" : "WHERE recipient='$recipient'";
-    $result = mysqli_query($db, "Select idk, datetime, message, user, attachment_url from messages $where_clause Order by idk Desc") or die ("DB error: $dbname");
-    print "<TABLE class='table table-bordered' style='color: white;'>";
-    print "<TR><TD>id</TD><TD>Date/Time</TD><TD>User</TD><TD>Message</TD><td>Załącznik</td></TR>\n";
-    while ($row = mysqli_fetch_array ($result))
-    {
-        $id = $row[0];
-        $date = $row[1];
-        $message= $row[2];
-        $user = $row[3];
+        $recipient = $_SESSION["zadanie9-logged-in"];
+        $where_clause = $recipient == "admin" ? "" : "WHERE recipient='$recipient'";
+        $result = mysqli_query($db, "Select idk, datetime, message, user, attachment_url from messages $where_clause Order by idk Desc") or die ("DB error: $dbname");
+        print "<TABLE id='msg-from-db' class='table table-bordered' style='color: white;'>";
+        print "<TR><TD>id</TD><TD>Date/Time</TD><TD>User</TD><TD>Message</TD><td>Załącznik</td></TR>\n";
+        while ($row = mysqli_fetch_array ($result))
+        {
+            $id = $row[0];
+            $date = $row[1];
+            $message= $row[2];
+            $user = $row[3];
+            
+            $attachment_url = $row[4];
+            
+            if (str_ends_with($row[4], "gif") || str_ends_with($row[4], "png") || str_ends_with($row[4], "jpg")) {
+                $attachment = "<a target='_blank' href='$row[4]'><img src='$attachment_url' style='width: 120px; height: 80px;' /></a>";
+            } else if (str_ends_with($row[4], "mp3")) {
+                $attachment = "<audio controls><source src='$attachment_url' type='audio/mpeg'></audio>";
+            } else if (str_ends_with($row[4], "mp4")) {
+                $attachment = "<video width='320' height='240' controls><source src='$attachment_url' type='video/mp4'></video>";
+            } else if(strlen($row[4]) >= 1) {
+                $attachment = "<a target='_blank' href='$row[4]'>$row[4]</a>";
+            } else {
+                $attachment = "(brak załącznika)";
+            }
+            
+            print "<TR><TD>$id</TD><TD>$date</TD><TD>$user</TD><TD>$message</TD><td>$attachment</td></TR>\n";
+        }
+        print "</TABLE>";
+    ?>
 
-        $attachment_url = $row[4];
-
-        if (str_ends_with($row[4], "gif") || str_ends_with($row[4], "png") || str_ends_with($row[4], "jpg")) {
-            $attachment = "<a target='_blank' href='$row[4]'><img src='$attachment_url' style='width: 120px; height: 80px;' /></a>";
-        } else if (str_ends_with($row[4], "mp3")) {
-            $attachment = "<audio controls><source src='$attachment_url' type='audio/mpeg'></audio>";
-        } else if (str_ends_with($row[4], "mp4")) {
-            $attachment = "<video width='320' height='240' controls><source src='$attachment_url' type='video/mp4'></video>";
-        } else if(strlen($row[4]) >= 1) {
-            $attachment = "<a target='_blank' href='$row[4]'>$row[4]</a>";
-        } else {
-            $attachment = "(brak załącznika)";
+    <script>
+        function InsertRow(id, date, user, message, attachment) {
+            var table = document.getElementById("msg-from-db");
+            var row = table.insertRow(1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+            cell1.innerHTML = id;
+            cell2.innerHTML = date;
+            cell3.innerHTML = user;
+            cell4.innerHTML = message;
+            cell5.innerHTML = attachment;
         }
 
-        print "<TR><TD>$id</TD><TD>$date</TD><TD>$user</TD><TD>$message</TD><td>$attachment</td></TR>\n";
-    }
-    print "</TABLE>";
-    ?>
+        function idExistsInTable(id) {
+        var table = document.getElementById("msg-from-db");
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            if (row.cells[0].innerText == id) {
+                return true;
+            }
+        }
+        return false;
+        }
+
+        var eventSourceData = new EventSource('msg-from-db.php');
+        eventSourceData.onmessage = function(e) { 
+
+            var sourceData = JSON.parse(e.data);
+            console.log(sourceData);
+
+            if (sourceData.id == null || sourceData.id === "" || idExistsInTable(sourceData.id)) { return; }
+
+            if (sourceData.attachment_url == undefined) { sourceData.attachment_url = "(brak załącznika)"; }
+            
+            var attachment;
+            if (sourceData.attachment_url.endsWith("gif") || sourceData.attachment_url.endsWith("png") || sourceData.attachment_url.endsWith("jpg")) {
+                attachment = "<a target='_blank' href='" + sourceData.attachment_url + "'><img src='" + sourceData.attachment_url + "' style='width: 120px; height: 80px;' /></a>";
+            } else if (sourceData.attachment_url.endsWith("mp3")) {
+                attachment = "<audio controls><source src='" + sourceData.attachment_url + "' type='audio/mpeg'></audio>";
+            } else if (sourceData.attachment_url.endsWith("mp4")) {
+                attachment = "<video width='320' height='240' controls><source src='" + sourceData.attachment_url + "' type='video/mp4'></video>";
+            } else if (sourceData.attachment_url.length >= 1) {
+                attachment = "<a target='_blank' href='" + sourceData.attachment_url + "'>" + sourceData.attachment_url + "</a>";
+            } else {
+                attachment = "(brak załącznika)";
+            }
+            
+            InsertRow(sourceData.id, sourceData.date, sourceData.user, sourceData.message, attachment);
+        };
+        eventSourceData.onerror = function(ex) { 
+            eventSourceData.close(); 
+            console.log(ex); 
+        };
+    </script>
 
     <hr />
 
