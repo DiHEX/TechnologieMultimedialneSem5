@@ -11,8 +11,9 @@ $post = $_POST['post'];
 $recipient = $_POST['recipient'];
 if (IsSet($_POST['post']))
 {
+    $_SESSION["recipient"] = $_POST['recipient'];
     $db = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_zadanie9");
-
+    
     if(isset($_FILES["fileToUpload"]) && $_FILES['fileToUpload']['size'] > 1) {
         $username = $_SESSION["zadanie9-logged-in"];
         if (!is_dir("/var/www/html/zadanie9/files/$username")) {

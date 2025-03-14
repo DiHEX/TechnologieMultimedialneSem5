@@ -45,9 +45,11 @@
         <select name="recipient" class="form-control">
             <?php
             $curuser = $_SESSION["zadanie9-logged-in"];
+            $selectedRecipient = isset($_SESSION["recipient"]) ? $_SESSION["recipient"] : '';
             $result = mysqli_query($db, "select username from users WHERE username != '$curuser'") or die ("DB error: $dbname");
             while ($row = mysqli_fetch_array ($result)) {
-                echo "<option>$row[0]</option>";
+                $selected = $row[0] == $selectedRecipient ? 'selected' : '';
+                echo "<option value='$row[0]' $selected>$row[0]</option>";
             }
             ?>
         </select>
@@ -125,7 +127,6 @@
         eventSourceData.onmessage = function(e) { 
 
             var sourceData = JSON.parse(e.data);
-            console.log(sourceData);
 
             if (sourceData.id == null || sourceData.id === "" || idExistsInTable(sourceData.id)) { return; }
 
