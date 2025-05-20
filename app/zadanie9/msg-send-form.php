@@ -123,7 +123,8 @@
         return false;
         }
 
-        var eventSourceData = new EventSource('msg-from-db.php');
+        var eventSourceData = new EventSource('/zadanie9/msg-from-db.php', { withCredentials: true });
+
         eventSourceData.onmessage = function(e) { 
 
             var sourceData = JSON.parse(e.data);
@@ -147,9 +148,9 @@
             
             InsertRow(sourceData.id, sourceData.date, sourceData.user, sourceData.message, attachment);
         };
-        eventSourceData.onerror = function(ex) { 
-            eventSourceData.close(); 
-            console.log(ex); 
+        eventSourceData.onerror = function() {
+            console.error('SSE error');
+            eventSourceData.close();
         };
     </script>
 

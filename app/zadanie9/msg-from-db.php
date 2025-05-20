@@ -1,43 +1,57 @@
 <?php
 session_start();
 if (!isset($_SESSION["zadanie9-logged-in"])) {
-    echo "Event: error\n";
-    echo "data: Session not started\n\n";
+    http_response_code(401);
     exit();
 }
 
+// ZWALNIAMY BLOKADĘ SESJI
+session_write_close();
+
+// połączenie
 $db = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_zadanie9");
 if (!$db) {
-    echo "Event: error\n";
-    echo "data: MySQL Connection error\n";
-    echo "data: Errno: " . mysqli_connect_errno() . "\n";
-    echo "data: Error: " . mysqli_connect_error() . "\n\n";
-    exit();
+    http_response_code(500);
+    exit("DB error: ".mysqli_connect_error());
 }
 
-header("Content-Type: text/event-stream");
-header("Cache-Control: no-cache");
+// nagłówki SSE
+header('Content-Type: text/event-stream');
+header('Cache-Control: no-cache');
+header('Connection: keep-alive');
 
+// wyłącz buforowanie PHP i kompresję
+ini_set('output_buffering',  'off');
+ini_set('zlib.output_compression', false);
+while (ob_get_level() > 0) { ob_end_flush(); }
+ob_implicit_flush(true);
+ignore_user_abort(true);
+
+// przygotuj filtr
+$user      = mysqli_real_escape_string($db, $_SESSION["zadanie9-logged-in"]);
+$where     = $user === 'admin' ? '' : "WHERE recipient='$user'";
+$lastId    = 0;
+
+// pętla SSE
 while (!connection_aborted()) {
-    $recipient = $_SESSION["zadanie9-logged-in"];
-    $where = $recipient == "admin" ? "" : "WHERE recipient='$recipient'";
-    $rezultat = mysqli_query($db, "SELECT idk, datetime, message, user, attachment_url FROM messages $where ORDER BY idk DESC LIMIT 1") or die ("DB error: $dbname");
-
-    while ($row = mysqli_fetch_array($rezultat)) {
-        $id = $row[0];
-        $date = $row[1];
-        $message = $row[2];
-        $user = $row[3];
-        $attachment_url = $row[4];
-
-        echo "data: {\"id\": \"$id\", \"date\": \"$date\", \"message\": \"$message\", \"user\": \"$user\", \"attachment_url\": \"$attachment_url\"}\n\n";
+    $q = "SELECT idk, datetime, message, user, attachment_url 
+          FROM messages 
+          $where AND idk > $lastId 
+          ORDER BY idk ASC";
+    $res = mysqli_query($db, $q);
+    while ($row = mysqli_fetch_assoc($res)) {
+        $lastId = (int)$row['idk'];
+        $json   = json_encode([
+            'id'             => $lastId,
+            'date'           => $row['datetime'],
+            'message'        => $row['message'],
+            'user'           => $row['user'],
+            'attachment_url' => $row['attachment_url']
+        ]);
+        echo "data: {$json}\n\n";
     }
-
-    // flush the output buffer and send echoed messages to the browser
-    while (ob_get_level() > 0) { ob_end_flush(); }
     flush();
-    sleep(1); // Sleep for 1 second
+    sleep(1);
 }
 
 mysqli_close($db);
-?>
