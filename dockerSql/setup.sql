@@ -2,14 +2,14 @@
 -- USE tm_mysql_database;
 
 -- CREATE TABLE `users` (
---     `id` smallint(6) NOT NULL,
---     `username` varchar(128) COLLATE utf8_polish_ci NOT NULL,
---     `password` varchar(128) COLLATE utf8_polish_ci NOT NULL
+--     `id` smallint(6) ,
+--     `username` varchar(128) COLLATE utf8_polish_ci ,
+--     `password` varchar(128) COLLATE utf8_polish_ci 
 --     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- ALTER TABLE `users` ADD PRIMARY KEY (`id`);
 
--- ALTER TABLE `users` MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+-- ALTER TABLE `users` MODIFY `id` smallint(6)  AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 -- INSERT INTO 
 --     `users` (`id`, `username`, `password`) 
@@ -38,16 +38,16 @@
 
 
 -- CREATE TABLE `hosts` (
---   `id` smallint(6) NOT NULL,
---   `host` text NOT NULL,
---   `port` int NOT NULL,
+--   `id` smallint(6) ,
+--   `host` text ,
+--   `port` int ,
 --   `userId` smallint(6),
 --   FOREIGN KEY (`userId`) REFERENCES `users`(`id`)
 -- );
 
 -- ALTER TABLE `hosts` ADD PRIMARY KEY (`id`);
 
--- ALTER TABLE `hosts` MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+-- ALTER TABLE `hosts` MODIFY `id` smallint(6)  AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 -- -- Create table for login history
 -- CREATE TABLE login_history (
@@ -163,20 +163,18 @@
 -- (10, 'animowany'),
 -- (11, 'inny');
 
-
-
 CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie7;
 USE tm_mysql_zadanie7;
 
 CREATE TABLE ajax_from_db (
-  id smallint(6) NOT NULL,
+  id smallint(6) ,
   text1 VARCHAR(40),
   datetime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE ajax_from_db ADD PRIMARY KEY (id);
 
-ALTER TABLE ajax_from_db MODIFY id smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+ALTER TABLE ajax_from_db MODIFY id smallint(6)  AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 INSERT INTO ajax_from_db (text1) VALUES
 ('test1');
@@ -200,8 +198,8 @@ USE tm_mysql_zadanie9;
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    username VARCHAR(50)  UNIQUE,
+    password VARCHAR(255) ,
     ip VARCHAR(45),
     registration_date DATETIME
 );
@@ -234,22 +232,21 @@ CREATE TABLE IF NOT EXISTS invalid_logins (
 INSERT INTO users (username, password, ip, registration_date) VALUES
 ('admin', 'admin', '8.8.8.8', NOW());
 
-DROP DATABASE tm_mysql_zadanie13;
 CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie13;
 USE tm_mysql_zadanie13;
 
 CREATE TABLE podzadanie (
-    id_podzadania   INT AUTO_INCREMENT PRIMARY KEY,
-    id_zadania      INT UNSIGNED,
-    id_pracownika   INT UNSIGNED,
+    id_podzadania INT AUTO_INCREMENT PRIMARY KEY,
+    id_zadania INT UNSIGNED,
+    id_pracownika INT UNSIGNED,
     nazwa_podzadania VARCHAR(255),
-    stan            VARCHAR(255)
+    stan VARCHAR(255)
 );
 
 CREATE TABLE pracownicy (
-    id_pracownika       INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    login     VARCHAR(100),
-    password  VARCHAR(255),
+    id_pracownika INT UNSIGNED AUTO_INCREMENT,
+    login VARCHAR(100),
+    password VARCHAR(255),
     PRIMARY KEY (id_pracownika)
 );
 
@@ -257,19 +254,121 @@ INSERT INTO pracownicy (login, password) VALUES
 ('admin', 'admin');
 
 CREATE TABLE zadanie (
-    id_zadania            INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    id_pracownika            INT UNSIGNED NOT NULL,
-    nazwa_zadania  VARCHAR(255)    NOT NULL,
+    id_zadania INT UNSIGNED AUTO_INCREMENT,
+    id_pracownika INT UNSIGNED,
+    nazwa_zadania VARCHAR(255),
     PRIMARY KEY (id_zadania)
 );
 
 CREATE TABLE logowanie (
-    id_logowania       INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    id_pracownika       INT UNSIGNED NOT NULL,
-    datetime  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    state     VARCHAR(255),
+    id_logowania INT UNSIGNED AUTO_INCREMENT,
+    id_pracownika INT UNSIGNED,
+    datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    state VARCHAR(255),
     PRIMARY KEY (id_logowania)
 );
 
 
---docker exec -it <mysql-container-id> mysql -u root -p
+CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie14;
+USE tm_mysql_zadanie14;
+
+CREATE TABLE user (
+  userid INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(255),
+  password VARCHAR(255),
+  userrank VARCHAR(255)
+);
+
+
+CREATE TABLE lekcje (
+  idl INT AUTO_INCREMENT PRIMARY KEY,
+  idc INT,
+  nazwa VARCHAR(255),
+  tresc TEXT,
+  plik_multimedialny VARCHAR(255)
+);
+
+
+CREATE TABLE test (
+  idt INT AUTO_INCREMENT PRIMARY KEY,
+  idc INT,             
+  nazwa VARCHAR(255),
+  max_time INT
+);
+
+
+CREATE TABLE pytania (
+  idpyt INT AUTO_INCREMENT PRIMARY KEY,
+  idt INT,
+  tresc_pytania TEXT,
+  odpowiedz_a TEXT,
+  odpowiedz_b TEXT,
+  odpowiedz_c TEXT,
+  odpowiedz_d TEXT,
+  a TINYINT(1)  DEFAULT 0,
+  b TINYINT(1)  DEFAULT 0,
+  c TINYINT(1)  DEFAULT 0,
+  d TINYINT(1)  DEFAULT 0,
+  plik_multimedialny VARCHAR(255)
+);
+
+CREATE TABLE wyniki (
+  idw INT AUTO_INCREMENT PRIMARY KEY,
+  idp INT ,              
+  idt INT ,              
+  datetime DATETIME ,
+  punkty INT ,
+  plik_pdf VARCHAR(255)
+);
+
+
+CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie15;
+USE tm_mysql_zadanie15;
+
+CREATE TABLE clients (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE tickets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    kind VARCHAR(50) ,
+    client_id INT ,
+    employee_id INT,
+    content TEXT ,
+    response TEXT,
+    rating_stars TINYINT UNSIGNED ,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user (
+  userid INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(255),
+  password VARCHAR(255),
+  userrank VARCHAR(255),
+  ip VARCHAR(45),
+  registration_date DATETIME
+);
+
+
+CREATE DATABASE IF NOT EXISTS tm_mysql_zadanie16;
+USE tm_mysql_zadanie16;
+
+
+CREATE TABLE IF NOT EXISTS contents (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  subpage_name VARCHAR(255),
+  html_contents LONGTEXT 
+) ;
+
+CREATE TABLE IF NOT EXISTS logo (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  filename VARCHAR(255) 
+);
+
+CREATE TABLE IF NOT EXISTS chatbot_logs (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  sender VARCHAR(20) ,
+  content TEXT ,
+  date DATETIME 
+);

@@ -41,3 +41,6 @@ services:
 
 volumes:
   db-data:
+
+
+#docker exec -it <mysql-container-id> mysql -u root -p
