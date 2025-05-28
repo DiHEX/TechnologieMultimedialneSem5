@@ -2,8 +2,6 @@
 
 <?php
 
-session_start();
-
 $subpage_name = "contact";
 $connection = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_zadanie16");
 $select_query = $connection->prepare("SELECT html_contents FROM contents WHERE subpage_name=?");

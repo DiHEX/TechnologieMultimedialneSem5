@@ -39,7 +39,7 @@
                 <img src="<?php echo $logo_url; ?>" alt="logo firmy" style="max-width: 175px; display: inline-block;" />
             </div>
             <div class="col-md-4">
-                <form action="zadanie16/actions/upload-logo.php" method="post" enctype="multipart/form-data">
+                <form action="/zadanie16/actions/upload-logo.php" method="post" enctype="multipart/form-data">
                     <label for="logo-input">Zmień logotyp:</label>
                     <input type="file" class="form-control" id="logo-input" name="logo-input" />
                     <input type="submit" value="Zapisz" class="btn btn-primary btn-sm" />

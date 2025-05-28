@@ -1,7 +1,6 @@
 <h2>Oferta</h2>
 
 <?php
-session_start();
 
 $subpage_name = "offers";
 $connection = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_zadanie16");

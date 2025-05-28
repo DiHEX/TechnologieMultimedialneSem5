@@ -361,10 +361,18 @@ CREATE TABLE IF NOT EXISTS contents (
   html_contents LONGTEXT 
 ) ;
 
+INSERT INTO contents (subpage_name,html_contents) VALUES ('offers','');
+INSERT INTO contents (subpage_name,html_contents) VALUES ('how-to-reach-us','');
+INSERT INTO contents (subpage_name,html_contents) VALUES ('contact','');
+INSERT INTO contents (subpage_name,html_contents) VALUES ('about-company','');
+
+
 CREATE TABLE IF NOT EXISTS logo (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   filename VARCHAR(255) 
 );
+
+INSERT INTO logo (filename) VALUES ('');
 
 CREATE TABLE IF NOT EXISTS chatbot_logs (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

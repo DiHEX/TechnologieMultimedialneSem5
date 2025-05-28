@@ -8,14 +8,19 @@ $file_name_split = explode(".", $logo_file["name"]);
 $file_extension = end($file_name_split);
 $file_name = bin2hex(openssl_random_pseudo_bytes(10));
 
+$assetsDir = __DIR__ . '/../assets';
+if (!is_dir($assetsDir)) {
+    mkdir($assetsDir, 0777, true);
+}
 
-$path_base = "/zadanie16/assets";
-$path_file = "$path_base/$file_name.$file_extension";
-$path_url_file = "/zadanie16/assets/$file_name.$file_extension";
-move_uploaded_file($logo_file["tmp_name"], $path_file);
+$filename = "$file_name.$file_extension";
+$pathOnDisk = "$assetsDir/$filename";
+$urlPath    = "/zadanie16/assets/$filename";
 
-$idft_query = $db->prepare("UPDATE logo SET filename=?");
-$idft_query->bind_param("s", $path_url_file);
-$idft_query->execute();
+move_uploaded_file($logo_file["tmp_name"], $pathOnDisk);
+
+$stmt = $db->prepare("UPDATE logo SET filename=?");
+$stmt->bind_param("s", $urlPath);
+$stmt->execute();
 
 header("Location: /zadanie16/index.php");
