@@ -279,6 +279,11 @@ CREATE TABLE user (
   userrank VARCHAR(255)
 );
 
+INSERT INTO user (username, password, userrank) VALUES
+  ('coach1','pass1','coach'),
+  ('coach2','pass2','coach'),
+  ('coach3','pass3','coach'),
+  ('admin','admin','admin');
 
 CREATE TABLE lekcje (
   idl INT AUTO_INCREMENT PRIMARY KEY,

@@ -38,6 +38,8 @@ if (! isset($_SESSION["zadanie14-logged-in"])) {
     <?php
     if ($_SESSION["zadanie14-rank"] == "coach") {
         include "coach_view.php";
+    } else if ($_SESSION["zadanie14-rank"] == "admin") {
+        include "admin_view.php";
     } else {
         include "pracownik_view.php";
     }

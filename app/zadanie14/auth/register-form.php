@@ -46,6 +46,7 @@ if (isset($_SESSION["zadanie14-logged-in"])) {
             <select id="registration-form-rank" name="registration-form-rank" class="form-control">
                 <option selected value="pracownik">Pracownik (Kursant)</option>
                 <option value="coach">Coach (Szkoleniowiec)</option>
+                <option value="admin">Administrator</option>
             </select>
         </div>
 

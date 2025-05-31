@@ -30,17 +30,26 @@ while ($task_query->fetch()) {
     $subtask_query->bind_param("i", $task_id);
     $subtask_query->bind_result($subtask_id, $pracownik_id, $subtask_name, $subtask_state);
     $subtask_query->execute();
-    $subtask_query->store_result();
+    $subtask_query->store_result();   
+
     while ($subtask_query->fetch()) {
         $pracownik_name = get_pracownik_name_by_id($pracownik_id);
         if ($subtask_state == 100) {
+            $animal = "PUMĘ";
             echo "<li style='color: green'>";
         } else if ($subtask_state >= 0 && $subtask_state < 100) {
+            if ($subtask_state >= 50) {
+                $animal = "CZŁOWIEKA";
+            } else {
+                $animal = "ŻÓŁWIA";
+            }
             echo "<li style='color: black'>";
         } else {
+            $animal = "ŚLIMAKA";
             echo "<li style='color: red'>";
         }
-
+        echo "Pracownik zasłużył na $animal.";
+        echo "<br>";
         echo "$subtask_name ($subtask_state%) -> $pracownik_name
         </li>";
     }
