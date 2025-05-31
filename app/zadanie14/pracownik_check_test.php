@@ -53,10 +53,11 @@ foreach ($question_ids as $question_id) {
     $sql->execute();
     $sql->fetch();
 
-    $answer_a_correct = $_POST["question_{$question_id}_answer_a_correct"];
-    $answer_b_correct = $_POST["question_{$question_id}_answer_b_correct"];
-    $answer_c_correct = $_POST["question_{$question_id}_answer_c_correct"];
-    $answer_d_correct = $_POST["question_{$question_id}_answer_d_correct"];
+    // Use DB fields for correct answers instead of undefined $_POST keys
+    $answer_a_correct = $a;
+    $answer_b_correct = $b;
+    $answer_c_correct = $c;
+    $answer_d_correct = $d;
 
     $answer_a = isset($_POST["question_{$question_id}_answer_a"]) ? 1 : 0;
     $answer_b = isset($_POST["question_{$question_id}_answer_b"]) ? 1 : 0;
@@ -92,16 +93,24 @@ $pdf->Cell(0, 10, "", 0, 1);
 $pdf->Cell(0, 10, "Kopia tego raportu zostala przeslana twojemu coachowi", 0, 1, "C");
 // $pdf->Output();
 $random_name = bin2hex(openssl_random_pseudo_bytes(10));
-$pdf->Output("/zadanie14/files/$random_name.pdf", 'F');
+// Ensure output directory exists
+$outputDir = __DIR__ . '/files';
+if (!is_dir($outputDir)) {
+    mkdir($outputDir, 0755, true);
+}
+// Save PDF with correct Output signature
+$pdfFilePath = $outputDir . '/' . $random_name . '.pdf';
+$pdf->Output('F', $pdfFilePath);
 
+// Store relative URL for DB
+$pdf_url = '/zadanie14/files/' . $random_name . '.pdf';
 
 // There is SQL table with rows: idw	idp	idt	datetime	punkty	plik_pdf
 // Insert a row into this table
 $db = mysqli_connect("mysql-db", "root", "secret", "tm_mysql_zadanie14");
 $sql = $db->prepare("INSERT INTO wyniki(idw, idp, idt, datetime, punkty, plik_pdf) VALUES (NULL, ?, ?, ?, ?, ?)");
-$pdf_url = "/var/www/html/zadanie14/files/$random_name.pdf";
-$curdate = date("Y-m-d H:i:s");
 $sql->bind_param("iisss", $_SESSION["zadanie14-userid"], $_POST["idt"], $curdate, $correct_answers, $pdf_url );
 $sql->execute();
 
-$pdf->Output();
+header("Location: /zadanie14/index.php");
+exit();
