@@ -9,18 +9,6 @@ $task_query->bind_result($task_id, $pracownik_id, $task_name);
 $task_query->execute();
 $task_query->store_result();
 
-function get_pracownik_name_by_id($pracownik_id) {
-    global $db;
-    $pracownik_sql = "SELECT login FROM pracownicy WHERE id_pracownika=?";
-    $pracownik_query = $db->prepare($pracownik_sql);
-    $pracownik_query->bind_param("i", $pracownik_id);
-    $pracownik_query->bind_result($login);
-    $pracownik_query->execute();
-    $pracownik_query->store_result();
-    $pracownik_query->fetch();
-    return $login;
-}
-
 while ($task_query->fetch()) {
     echo "<div>";
     echo "<strong>$task_name</strong>";
