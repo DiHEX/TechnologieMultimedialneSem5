@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+    <meta charset="UTF-8" />
+    <title>Kalinowski</title>
+</HEAD>
+<BODY>
+<main>
+</main>
+
+<script>
+    // Read saved icons from local storage
+    const icons = JSON.parse(localStorage.getItem("icons")) || [
+        {"id": "layer1", "x0": 30, "y0": 70, "x_delta": 30, "y_delta": 0, "begin": 0, "duration": 1, "diameter": 5, "time": 2, "color": "red"}
+    ];
+
+    function spawnIcon(icon) {
+        const cx = `<animate attributeName="cx" from="${icon.x_delta > 0 ? icon.x0 : icon.x0 + (icon.x_delta * -1)}" to="${icon.x_delta > 0 ? icon.x0 + (icon.x_delta) : icon.x0}" begin="${icon.begin}s" dur=${icon.duration}s repeatCount=indefinite keyTimes="0;1"/>`;
+        const cy = `<animate attributeName="cy" from="${icon.y_delta > 0 ? icon.y0 : icon.y0 + (icon.y_delta * -1)}" to="${icon.y_delta > 0 ? icon.y0 + (icon.y_delta) : icon.y0}"" begin="${icon.begin}s" dur=${icon.duration}s repeatCount=indefinite keyTimes="0;1"/>`;
+
+        document.querySelector("main").innerHTML += `
+            <div id="${icon.id}" style="position:absolute; left: ${icon.x0}px; top:${icon.y0 + 250}px; visibility:visible;">
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="${icon.diameter}" cy="${icon.diameter}" r="${icon.diameter}" fill="${icon.color}">
+                        ${icon.x_delta !== 0 && cx}
+                        ${icon.y_delta !== 0 && cy}
+                    </circle>
+                </svg>
+            </div>
+        `;
+    }
+
+    for (const icon of icons) {
+        spawnIcon(icon);
+    }
+
+    function createIcon(event) {
+        event.preventDefault();
+        const icon = 'layer' + (Math.random() + 1).toString(36).substring(7);
+
+        const iconInstance = {
+            id: icon,
+            x0: parseInt(document.getElementById('x0').value),
+            y0: parseInt(document.getElementById('y0').value),
+            x_delta: parseInt(document.getElementById('x_delta').value),
+            y_delta: parseInt(document.getElementById('y_delta').value),
+            begin: parseInt(document.getElementById('begin').value),
+            duration: parseInt(document.getElementById('duration').value),
+            diameter: parseInt(document.getElementById('diameter').value),
+            time: parseInt(document.getElementById('time').value),
+            color: document.getElementById('color').value
+        };
+
+        icons.push(iconInstance);
+        localStorage.setItem("icons", JSON.stringify(icons));
+        spawnIcon(iconInstance);
+    }
+</script>
+
+<form>
+    <label>x0: </label>
+    <input type="number" id="x0" name="x0" value="50">
+    <br/>
+
+    <label>y0: </label>
+    <input type="number" id="y0" name="y0" value="50">
+    <br/>
+
+    <label>x_delta: </label>
+    <input type="number" id="x_delta" name="x_delta" value="190">
+    <br/>
+
+    <label>y_delta: </label>
+    <input type="number" id="y_delta" name="y_delta" value="0">
+    <br/>
+
+    <label>begin [s]: </label>
+    <input type="number" id="begin" name="begin" value="0">
+    <br/>
+
+    <label>duration [s]: </label>
+    <input type="number" id="duration" name="duration" value="2">
+    <br/>
+
+    <label>diameter: </label>
+    <input type="number" id="diameter" name="diameter" value="10">
+    <br/>
+
+    <label>time [s]: </label>
+    <input type="number" id="time" name="time" value="2">
+    <br/>
+
+    <label>color: </label>
+    <input type="color" id="color" name="color" value="#ff00ff">
+    <br/>
+
+    <button type="button" onclick="createIcon(event)">Dodaj</button>
+    <button type="button" onclick="localStorage.clear(); document.location.reload()">Wyczyść kółka</button>
+</form>
+</BODY>
+</HTML>
